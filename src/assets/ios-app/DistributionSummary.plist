@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Sparks Roster.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>armv7</string>
+				<string>arm64</string>
+			</array>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>47BC634AEEEDED41998CB08377EDA13AAA1F9527</string>
+				<key>dateExpires</key>
+				<string>2/7/23</string>
+				<key>type</key>
+				<string>iOS Distribution</string>
+			</dict>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>MJFG62R42F.com.sparksonline.roster</string>
+				<key>com.apple.developer.team-identifier</key>
+				<string>MJFG62R42F</string>
+				<key>get-task-allow</key>
+				<false/>
+				<key>keychain-access-groups</key>
+				<array>
+					<string>MJFG62R42F.com.sparksonline.roster</string>
+				</array>
+			</dict>
+			<key>name</key>
+			<string>Sparks Roster.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>1017bf6e-42b7-4183-863c-a2dc4be86359</string>
+				<key>name</key>
+				<string>iOS Team Inhouse Provisioning Profile: com.sparksonline.roster</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>MJFG62R42F</string>
+				<key>name</key>
+				<string>Sparks Exhibits and Environments, Corp</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

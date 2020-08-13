@@ -1,0 +1,302 @@
+<ion-header>
+  <div class="header-bar">
+    <div class="logo" #logo (click)="!isWeb ? '' : getUsers('department')"><img [src]="!isWeb? './../../assets/imgs/logo-white.svg': './../../assets/imgs/logo.svg'" alt=""></div>
+    <div class="nav" [hidden]="appSearchOpened">
+      <ul>
+        <li><a [class]="filters.tab == 'department' ? 'active': ''" href="javascript:void(0)" (click)="getUsers('department')">DEPARTMENT</a></li>
+        <li><a [class]="filters.tab == 'location' ? 'active': ''" href="javascript:void(0)" (click)="getUsers('location')">LOCATION</a></li>
+        <li><a [class]="filters.tab == 'all' ? 'active': ''" href="javascript:void(0)" (click)="getUsers('all')">ALL EMPLOYEES</a></li>
+      </ul>
+    </div>
+    <!--<div class="search" [hidden]="!appSearchOpened && !isWeb" [ngStyle]="{'display':appSearchOpened ? 'block' : 'none' }"> -->
+    <div class="search" [style.display]="!appSearchOpened && !isWeb ? 'none':'block'">
+
+        
+      <ion-searchbar #searchbar showCancelButton cancelButtonIcon="close" 
+        (ionChange)="searchUser($event)" 
+        debounce="1000" 
+        (ionCancel)="searchUser($event)" 
+        [value]="filters.searchText"></ion-searchbar>      
+    </div>
+    <div class="profile">
+      <div class="initials" (click)="presentPopover($event)">{{getInitials()}}</div>
+    </div>
+  </div>
+</ion-header>
+
+
+
+
+<ion-content [scrollEvents]="true" (ionScroll)="logScrolling($event)">
+
+
+  <div class="content-box">
+    <h1 class="page-title">
+      {{filters.tab != 'all' ? filters.tab : (filters.filterDetail.alphabets.length ? 'Names starting with '+filters.filterDetail.alphabets[0] : ((filters.filterDetail.departments.length + filters.filterDetail.locations.length) > 0 ? 'Here you go...' : 'All Employees'))}} 
+      <span class="count" *ngIf="!loadingData && !prevPage && (filters.filterDetail.departments.length + filters.filterDetail.locations.length) < 1">{{(pagingInfo.totalRecords ? pagingInfo.totalRecords : '')}}</span> 
+    </h1>
+    
+    <div class="filter-chips" *ngIf="filters.groupBy == 'all'">
+      <ng-container>
+          <ion-chip class="clear-all" (click)="setFilters(true, !isWeb)" *ngIf="(filters.filterDetail.departments.length + filters.filterDetail.locations.length) > 1">
+            <ion-label >Clear All</ion-label>
+            <!-- <ion-icon name="close-circle" (click)="setFilters(true)"></ion-icon> -->
+          </ion-chip>
+      </ng-container>
+      <ng-container *ngFor="let item of filtersArr.departments;  let i = index">
+        <ion-chip *ngIf="item.isChecked">
+          <ion-label >{{item.val}}</ion-label>
+          <ion-icon name="close" (click)="removeFilter('departments' , i)"></ion-icon>
+        </ion-chip>
+      </ng-container>
+      <ng-container *ngFor="let item of filtersArr.locations;  let i = index">
+        <ion-chip *ngIf="item.isChecked">
+          <ion-label >{{item.val}}</ion-label>
+          <ion-icon name="close" (click)="removeFilter('locations', i)"></ion-icon>
+        </ion-chip>
+      </ng-container>
+      
+    </div>
+
+
+    <!-- <ion-button (click)="syncData()">Sync Data</ion-button> 
+    <ion-button (click)="getOfflineContact()">Get Data</ion-button>
+    <ion-button (click)="downloadImage()">Get Image</ion-button> -->
+
+
+    <!-- Filter Button -->
+    <ion-button color="secondary" class="filter-button" (click)="openFilter()" *ngIf="isWeb">
+      <ion-icon slot="icon-only" src="./../../assets/icon/filter.svg"></ion-icon>
+    </ion-button>
+
+
+
+
+
+    <!-- Alphabets list Box -->
+    <!-- <div class="alphabets-list" *ngIf="filters.groupBy == 'all' && filters.tab == 'all' && isWeb">
+        <ion-item (click)="setAphabet('', true)" class="a-z" [ngClass]="!filters.filterDetail.alphabets.length ? 'active' : ''">
+            <ion-label><ion-icon src="./../../assets/icon/az.svg"></ion-icon></ion-label>
+        </ion-item>
+        <ion-item (click)="setAphabet(char)" *ngFor="let char of alphabets" [ngClass]="filters.filterDetail.alphabets.length && filters.filterDetail.alphabets[0] == char ? 'active' : ''">
+            <ion-label>{{char}}</ion-label>
+        </ion-item>
+    </div> -->
+
+    <!-- Main Content -->
+    <div *ngIf="filters.groupBy != 'all'">
+      <section class="card-section" *ngFor="let item of contactList">
+        <h5><span>{{item.value}}</span>
+          <a class="view-all" href="javascript:void(0);" (click)="viewAll(filters.tab, item.value)">View All</a>
+        </h5>
+  
+        <ion-slides #testslider pager="false" [options]="slideOpts" (ionSlidePrevEnd)="end(true)" class="card-list">
+          <ion-slide *ngFor="let i of item.users">
+            <ion-card (click)="presentModal(i)" >
+              <img src="./../../assets/imgs/profile-blank.png" alt="">
+              <div class="inner-card">
+                <!-- <ion-img class="card-img" [src]="i.thumbnailImage+(refreshDone || '')" alt=""></ion-img> -->
+                <ion-img class="card-img" [src]="i.thumbnailImage" alt=""></ion-img>
+                <img class="loa-tag-cls" *ngIf="i.isLoa" src="./../../assets/icon/loa-tag.png" alt="">
+                <div class="card-text">
+                  <h6 *ngIf="!i.isDog">{{i.firstName}} {{i.lastName}}</h6>
+                  <h6 *ngIf="i.isDog">{{i.fullName}}</h6>
+                  <p><span>{{i.title || '--'}}</span>
+                    <ion-icon class="card-icon" name="arrow-forward"></ion-icon>
+                  </p>
+                </div>
+              </div>
+            </ion-card>
+          </ion-slide>        
+        </ion-slides>
+      </section>
+
+      <div class="no-result" *ngIf="noResult">
+        <div class="no-result-content">
+          <img src="./../../assets/imgs/no-result.svg" alt="">
+          <h2>No Result Found</h2>
+          <p>We can’t find any item matching your search.</p>
+        </div>
+      </div>
+      
+    </div>
+
+    <div *ngIf="filters.groupBy == 'all'">
+
+      <section class="card-section" >
+        <!-- <h5>All Employees</h5> -->
+
+        <ul class="card-list">
+            <li *ngFor="let i of contactList">
+              <ion-card (click)="presentModal(i)">
+                <img src="./../../assets/imgs/profile-blank.png" alt="">
+                <div class="inner-card">
+                  <!-- <ion-img class="card-img" [src]="i.thumbnailImage+(refreshDone || '')" alt=""></ion-img> -->
+                  <ion-img class="card-img" [src]="i.thumbnailImage" alt=""></ion-img>
+                  <img class="loa-tag-cls" *ngIf="i.isLoa" src="./../../assets/icon/loa-tag.png" alt="">
+                  <!-- <img src="{{i.thumbnailImage ? i.thumbnailImage : './../../assets/imgs/profile-blank.png'}}" alt="" onError="this.src='./../../assets/imgs/profile-blank.png';"> -->
+                  <div class="card-text">
+                    <h6>{{i.firstName}} {{i.lastName}}</h6>
+                    <p><span>{{i.title || '--'}}</span>
+                      <ion-icon class="card-icon" name="arrow-forward"></ion-icon>
+                    </p>
+                  </div>
+                </div>
+              </ion-card>
+          </li>
+        </ul>
+        <div class="no-result" *ngIf="noResult">
+          <div class="no-result-content">
+            <img src="./../../assets/imgs/no-result.svg" alt="">
+            <h2>No Result Found</h2>
+            <p>We can’t find any item matching your search.</p>
+          </div>
+        </div>
+        <ion-infinite-scroll threshold="20%" (ionInfinite)="loadMore($event)">
+          <ion-infinite-scroll-content
+            loadingSpinner=""
+            loadingText="">
+          </ion-infinite-scroll-content>
+        </ion-infinite-scroll>
+  
+      </section>
+      
+    </div>
+
+    <!-- <button (click)="signOut()">Sign out</button> -->
+  </div>
+
+  
+
+</ion-content>
+
+
+<!-- Filter Box -->
+<div class="filter-box" #filterBox  [ngClass]="addSpaceonIphone? 'add-space-at-bottom': ''">
+  <div class="filter-header">
+    <div class="filter-close" (click)="closeFilter(true)">
+      <ion-icon *ngIf="isWeb" src="./../../assets/icon/filter-arrow.svg"></ion-icon>
+      <ion-icon *ngIf="!isWeb" name="close"></ion-icon>
+    </div>
+    <div class="filter-heading">Filter</div>
+    <button class="filter-clear" *ngIf="isWeb" (click)="setFilters(true)" [disabled]="!filters.filterDetail.departments.length && !filters.filterDetail.locations.length" >Clear</button>
+  </div>
+
+  <div class="filter-list" #filterLists>
+  
+    <ion-list>
+      <div class="ion-list-box" #departmentList>
+        <ion-list-header (click)="showFilterList('departmentList')">
+          <ion-label>DEPARTMENT</ion-label>
+        </ion-list-header>
+        <div class="ion-item-box">
+          <ion-item>
+            <ion-label>All</ion-label>
+            <ion-checkbox color="primary" [slot]="!isWeb ? 'start':'end'"  [(ngModel)]="selectAll.departments" (ngModelChange)="setAllFilters('departments')"></ion-checkbox>
+          </ion-item>
+          <ion-item *ngFor="let department of filtersArr.departments">
+            <ion-label>{{department.val}}</ion-label>
+            <ion-checkbox color="primary" [slot]="!isWeb ? 'start':'end'" [(ngModel)]="department.isChecked" (ngModelChange)="setFilters()"></ion-checkbox>
+          </ion-item>
+        </div>
+      </div>
+    </ion-list>
+
+    <ion-list>
+      <div class="ion-list-box" #locationList [ngClass]="!isWeb ? 'unactive' : ''">
+        <ion-list-header (click)="showFilterList('locationList')">
+          <ion-label>LOCATION</ion-label>
+        </ion-list-header>
+        <div class="ion-item-box">
+          <ion-item>
+            <ion-label>All</ion-label>
+            <ion-checkbox color="primary" [slot]="!isWeb ? 'start':'end'"  [(ngModel)]="selectAll.locations" (ngModelChange)="setAllFilters('locations')"></ion-checkbox>
+          </ion-item>
+          <ion-item *ngFor="let location of filtersArr.locations">
+            <ion-label>{{location.val}}</ion-label>
+            <ion-checkbox color="primary" [slot]="!isWeb ? 'start':'end'" [(ngModel)]="location.isChecked" (ngModelChange)="setFilters()"></ion-checkbox>
+          </ion-item>
+        </div>
+      </div>
+    </ion-list>
+
+  </div>
+  
+  <div class="bottom-button" *ngIf="!isWeb">
+    <ion-button class="clear-button" (click)="setFilters(true, true)" [disabled]="!filters.filterDetail.departments.length && !filters.filterDetail.locations.length">CLEAR</ion-button>
+    <ion-button class="apply-button" (click)="setFilters(false, true)" >APPLY</ion-button>
+  </div>
+</div>
+
+<!-- Filter Backdrop -->
+<div class="backdrop-overlay" (click)="closeFilter()" #backdropOverlay></div>
+
+<ion-footer *ngIf="!isWeb" [ngClass]="addSpaceonIphone? 'add-space-at-bottom': ''">
+    <ion-segment class="footer-bar" value="" #footerButtons>
+      <ion-segment-button (click)="openProfile()">
+        <ion-label>ACCOUNT</ion-label>
+        <ion-icon src="./../../assets/icon/account-mobile.svg"></ion-icon>
+      </ion-segment-button>
+      <ion-segment-button (click)="openFilter()"> 
+        <ion-label>FILTER</ion-label>
+        <ion-icon src="./../../assets/icon/filter-mobile.svg"></ion-icon>
+      </ion-segment-button>
+      <ion-segment-button (click)="appSearch()">
+        <ion-label>Search</ion-label>
+        <ion-icon src="./../../assets/icon/search-mobile.svg"></ion-icon>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-footer>
+
+
+<!-- Mobile Profile -->
+<ion-menu *ngIf="!isWeb" side="start" menuId="mobile-profile" (ionWillClose)="mobileProfileClose()">
+    <ion-content>
+      <div class="profile-header">
+        <div class="profile-initials">
+            {{getInitials()}}
+        </div>
+        <div class="profile-details">
+          <p class="profile-fullname">{{loggedUser ? loggedUser.fullName: ''}}</p>
+          <p class="profile-email">{{loggedUser ? loggedUser.email : ''}}</p>
+        </div>
+      </div> 
+      <div class="profile-action-items">
+        <ion-list>
+          <ion-item>
+            <ion-label>Offline Mode</ion-label>
+            <ion-toggle mode="ios" [(ngModel)]="offlineSetting" (ngModelChange)="saveOfflineSetting()" [disabled]="(syncProgress > 0 && syncProgress < 100) && !isDownloadIntrupted"></ion-toggle>
+            <span class="synced-date" [hidden]="!lastSyncDate || !offlineSetting">Last synced {{lastSyncDate}}</span>
+          </ion-item>
+          <ion-item class="progress-label">
+            <div class="progress-box">
+              <!-- {{syncProgress}} -- {{lastSyncDate}} -- {{offlineSetting}} -- {{isDownloadIntrupted}} -->
+                <!-- <ion-label class="right-text" [hidden]="!syncProgress">{{syncProgress}}%</ion-label>
+                <ion-progress-bar value="{{syncProgress/100}}" [hidden]="!syncProgress"></ion-progress-bar> -->
+                <ion-label class="right-text" [hidden]="!syncProgress || lastSyncDate || !offlineSetting">{{syncProgress}}%</ion-label>
+                <ion-progress-bar value="{{syncProgress/100}}" [hidden]="!syncProgress || lastSyncDate || !offlineSetting"></ion-progress-bar>
+                <ion-label [hidden]="!isDownloadIntrupted">Download Intrupted</ion-label>
+                <!-- <ion-label *ngIf="syncProgress == 100">Download Complete</ion-label> -->
+                
+            </div>
+          </ion-item>
+          
+          <ion-item class="top-border" (click)="logOut()">
+            <ion-label>Logout</ion-label>
+            <ion-icon src="./../../../assets/icon/logout.svg" slot="end"></ion-icon>
+          </ion-item>
+        </ion-list>
+      </div> 
+      <div class="app-version-footer" [ngClass]="addSpaceonIphone? 'add-space-at-bottom': ''">
+        <p>App Version: {{appVersionNum.__zone_symbol__value}}</p>
+      </div>
+      <!-- <div>
+        <ion-progress-bar value="{{syncProgress/100}}" [hidden]="!syncProgress || !lastSyncDate"></ion-progress-bar>
+        <span [hidden]="!syncProgress">{{syncProgress}}%</span>
+        <div [hidden]="!lastSyncDate">Last Sync On : {{lastSyncDate}}</div>
+        <div class="intrupted" *ngIf="networkStatus == 'online' && (!lastSyncDate && offlineMode=='on')"><ion-button (click)="retrySync()">Retry</ion-button></div>
+      </div> -->
+    </ion-content>
+</ion-menu>
+
+<ion-router-outlet [hidden]="true" main></ion-router-outlet>

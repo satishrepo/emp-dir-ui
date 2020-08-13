@@ -1,0 +1,29 @@
+<!-- -->
+<ion-content class="animated fadeIn login auth-page">
+  <div class="login-content login-bg">
+    
+    <ion-card class="login-card">
+      <ion-card-header>
+        <!-- Logo -->
+        <div class="logo"><img src="./../../assets/imgs/logo.svg" alt=""></div>
+      </ion-card-header>
+      <ion-card-content>
+        <!-- Login form -->
+        <!-- <div id="my-signin2"></div> -->
+        <!-- <button ion-button icon-left  block outline #loginBtn>
+          LOGIN WITH GOOGLE
+        </button> -->
+            <ion-button class="login-button" (click)="login()">
+                <ion-icon slot="start" src="./../../assets/icon/g-logo.svg"></ion-icon>
+              SIGN IN WITH GOOGLE ACCOUNT
+            </ion-button>
+            <ion-button class="app-download-button"  *ngIf="isWeb && isMobileWeb" [href]="notIos ? androidAppUrl : 'itms-services://?action=download-manifest&url='+iosAppUrl">
+              <ion-icon slot="start" [src]="notIos ? './../../assets/icon/android-logo.svg' : './../../assets/icon/ios-logo.svg'"></ion-icon>
+              {{notIos? 'DOWNLOAD FOR ANDROID': 'DOWNLOAD FOR iOS'}}
+            </ion-button>
+        <div #errorDiv></div>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+</ion-content>

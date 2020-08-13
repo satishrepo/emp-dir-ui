@@ -1,0 +1,164 @@
+<ion-content (swipe)="swipeEvent($event)">
+  <div class="people-box">
+    <ion-button color="primary" class="close-button hide-on-mobile" (click)="closeModalPopup()">
+      <ion-icon src="./../../assets/icon/close.svg"></ion-icon>
+    </ion-button>
+
+    <ion-button class="back-button show-on-mobile" (click)="closeModalPopup()">
+      <ion-icon name="arrow-back"></ion-icon>
+    </ion-button>
+    <!-- {{value | json}} -->
+    <div class="people-image">
+      <div class="people-image-block">
+        <img src="{{dogImage ? dogImage : './../../../assets/imgs/profile-blank.png'}}" alt=""
+          onError="this.src='./../../assets/imgs/profile-blank.png';">
+        <div class="upload-image" *ngIf="isWeb && loggedUser.role == 'ADMIN'">
+          <div class="upload-image-inner">
+            <p class="upload-image-add"></p>
+            <p class="upload-image-text">Click here to upload<br>Picture</p>
+            <p class="upload-image-info">Kindly upload less than 1 MB JPEG files in min 200 * 300 resolution</p>
+            <input #fileInput type="file" (change)="fileChangeEvent($event)" placeholder="Upload file" accept=".jpg">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="people-detail" *ngIf="isWeb">
+
+      <h2 class="name-input-with-icon-btn">
+
+        <ion-input [ngClass]="!editMode ? 'input-not-editable': 'input-editable'" placeholder="Name" [(ngModel)]="dogName" [readonly]="!editMode"></ion-input>
+
+        <span class="popup-icon-btn-sec" *ngIf="value.isDog && isWeb && loggedUser.role == 'ADMIN'">
+          <a href="javascript:void(0)" (click)="editEdit()">
+            <img src="./../../../assets/icon/edit-icon-in-popup.png" >
+          </a>
+          <a href="javascript:void(0)" (click)="deleteDog(this.value.id)" >
+            <img src="./../../../assets/icon/delete-icon-in-popup.png">
+          </a>
+        </span>
+      </h2>
+      <h5>
+        <ion-input placeholder="Breed" [(ngModel)]="dogBreed" [ngClass]="!editMode ? 'input-not-editable': 'input-editable'" [readonly]="!editMode"></ion-input>
+      </h5>
+      <label class="department" *ngIf="dogDob && !editMode">{{util.getAge(dogDob)}}</label>
+      <label class="department" *ngIf="!dogDob && !editMode">{{(dogDob||'-')}}</label>
+      <label class="department dob-age-as-of-now" *ngIf="editMode && isWeb && loggedUser.role == 'ADMIN'" >
+        <!-- <ion-datetime displayFormat="MM/DD/YYYY" [(ngModel)]="dogDob" placeholder="{{(dogDob||'Date of Birth')}}" *ngIf="editMode"></ion-datetime> -->
+        <!-- <ion-input [ngClass]="!editMode ? 'input-not-editable': 'input-editable'" placeholder="MM-DD-YYYY" [(ngModel)]="dogDob" [readonly]="!editMode" ></ion-input> -->
+        <input [ngClass]="!editMode ? 'input-not-editable': 'input-editable'" placeholder="MM-DD-YYYY" type="text" 
+        mask="00-00-0000" [(ngModel)]="dogDob" [readonly]="!editMode" [dropSpecialCharacters]="false" [specialCharacters]="[ '-' ]" (keyup)="checkValidDate()">
+        <small class="error-text" *ngIf="dobError">Invalid date of birth</small>
+      </label>
+
+
+      <p *ngIf="value.isDog">
+        <ion-icon src="./../../../assets/icon/location.svg"></ion-icon>
+        {{(value.ownerInfo.location +' - '+value.ownerInfo.fullName) || '--'}}
+      </p>
+
+      <p *ngIf="!value.isDog">
+        <ion-icon src="./../../../assets/icon/location.svg"></ion-icon>
+        {{(value.location +' - '+value.fullName) || '--'}}
+      </p>
+
+      <p>
+        <ion-icon src="./../../../assets/icon/phone.svg"></ion-icon>{{workPh}}
+      </p>
+
+      <p>
+        <ion-icon src="./../../../assets/icon/mobile.svg"></ion-icon>{{mobilePh}}
+      </p>
+
+
+      <p class="email" *ngIf="value.isDog">
+        <ion-icon src="./../../../assets/icon/email.svg"></ion-icon> <a
+          href="mailto:{{value.email}}">{{value.ownerInfo.email}}</a>
+      </p>
+      <p class="email" *ngIf="!value.isDog">
+        <ion-icon src="./../../../assets/icon/email.svg"></ion-icon> <a
+          href="mailto:{{value.email}}">{{value.email}}</a>
+      </p>
+
+      <div class="add-dog-btn-sec" *ngIf="isWeb && loggedUser.role == 'ADMIN'">
+        <ion-button color="primary" (click)="saveDog()" [disabled]="!editMode || (!value.isDog && !fileName) || !dogName || dobError">Save</ion-button>
+        <ion-button color="primary" (click)="closeAlert()">Cancel</ion-button>
+      </div>
+
+    </div>
+
+    <div class="people-detail-mobile" *ngIf="!isWeb">
+      <div class="people-name-box">
+        <h2>{{value.fullName}}</h2>
+        <h5>{{value.title || '--'}}</h5>
+      </div>
+      <div class="people-detail-box" #detailBox>
+        <div class="people-detail-button" (click)="openDogDetail()"></div>
+        <div class="people-detail-card">
+
+          <div class="people-detail-row width-50" #department>
+            <p class="label">DEPARTMENT</p>
+            <p>{{value.department || '--'}}</p>
+          </div>
+          <div class="people-detail-row row-text-right width-50" #location>
+            <p class="label">LOCATION & OWNER</p>
+            <p>{{value.ownerInfo.location +' - '+value.ownerInfo.fullName}}</p>
+          </div>
+          <div class="open-details" #openDetails>
+            <div class="people-detail-row">
+              <p class="label">WORK PHONE</p>
+              <p>{{workPh}}</p>
+              <div *ngIf="workPh != '--'" class="action-box">
+                <div class="action-item"><a [href]="sanitizeUrl('sms:'+workPh)">
+                    <ion-icon src="./../../../assets/icon/message.svg"></ion-icon>
+                  </a></div>
+                <div class="action-item"><a [href]="sanitizeUrl('tel:'+workPh)">
+                    <ion-icon src="./../../../assets/icon/call.svg"></ion-icon>
+                  </a></div>
+              </div>
+            </div>
+            <div class="people-detail-row">
+              <p class="label">MOBILE</p>
+              <p>{{mobilePh}}</p>
+              <div *ngIf="mobilePh != '--'" class="action-box">
+                <div class="action-item"><a [href]="sanitizeUrl('sms:'+mobilePh)">
+                    <ion-icon src="./../../../assets/icon/message.svg"></ion-icon>
+                  </a></div>
+                <div class="action-item"><a [href]="sanitizeUrl('tel:'+mobilePh)">
+                    <ion-icon src="./../../../assets/icon/call.svg"></ion-icon>
+                  </a></div>
+              </div>
+            </div>
+            <div class="people-detail-row">
+              <p class="label">DOB</p>
+              <p>{{util.getAge(dogDob)}}</p>
+              <div class="action-box" *ngIf="!value.isDog">
+                <div class="action-item"><a [href]="sanitizeUrl('mailto:'+value.email)">
+                    <ion-icon src="./../../../assets/icon/email-mob.svg"></ion-icon>
+                  </a></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-box" #actionBox>
+            <div class="action-item" *ngIf="!value.isDog">
+              <a [href]="sanitizeUrl('mailto:'+value.email)">
+                <ion-icon src="./../../../assets/icon/email-mob.svg"></ion-icon>
+              </a>
+            </div>
+            <ng-container *ngIf="actionPhone">
+              <div class="action-item"><a [href]="sanitizeUrl('sms:'+ actionPhone )">
+                  <ion-icon src="./../../../assets/icon/message.svg"></ion-icon>
+                </a></div>
+              <div class="action-item"><a [href]="sanitizeUrl('tel:'+ actionPhone )">
+                  <ion-icon src="./../../../assets/icon/call.svg"></ion-icon>
+                </a></div>
+            </ng-container>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</ion-content>

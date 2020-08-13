@@ -1,0 +1,246 @@
+[
+    {
+      "email": "rbarnish@wearesparks.com",
+      "title": "Interactive Designer",
+      "firstName": "Ryan",
+      "lastName": "Barnish",
+      "location": "Philadelphia",
+      "department": "Creative",
+      "phones": [
+        {
+          "value": "215-613-9664",
+          "type": "work"
+        },
+        {
+          "value": "267-838-0744",
+          "type": "mobile"
+        }
+      ]
+    },
+    {
+      "email": "rosteruser@wearesparks.com",
+      "title": "Project Manager",
+      "firstName": "Roster",
+      "lastName": "User",
+      "location": "Philadelphia",
+      "department": "Project Management",
+      "phones": [
+        {
+          "value": "215-671-1664",
+          "type": "work"
+        },
+        {
+          "value": "267-267-1307",
+          "type": "mobile"
+        }
+      ]
+    },
+    {
+      "email": "ccrowley@wearesparks.com",
+      "title": "Senior Director, Human Resources",
+      "firstName": "Christina",
+      "lastName": "Crowley",
+      "location": "Philadelphia",
+      "department": "HR",
+      "phones": [
+        {
+          "value": "215-613-9661",
+          "type": "work"
+        },
+        {
+          "value": "267-530-0777",
+          "type": "mobile"
+        }
+      ]
+    },
+    {
+      "email": "npyzdrowska@wearesparks.com",
+      "title": "HR Generalist",
+      "firstName": "Natalia",
+      "lastName": "Pyzdrowska",
+      "location": "Philadelphia",
+      "department": "HR",
+      "phones": [
+        {
+          "value": "215-620-5344",
+          "type": "mobile"
+        },
+        {
+          "value": "215-676-3514",
+          "type": "work"
+        }
+      ]
+    },
+    {
+      "email": "ocaccoma@wearesparks.com",
+      "title": "HR Business Partner",
+      "firstName": "Olivia",
+      "lastName": "Caccoma",
+      "location": "Philadelphia",
+      "department": "HR",
+      "phones": [
+        {
+          "value": "215-602-8130",
+          "type": "work"
+        },
+        {
+          "value": "267-541-4455",
+          "type": "mobile"
+        }
+      ]
+    },
+    {
+      "email": "athompson@wearesparks.com",
+      "title": "Senior Help Desk Technician",
+      "firstName": "Anita",
+      "lastName": "Thompson",
+      "location": "Philadelphia",
+      "department": "IT",
+      "phones": [
+        {
+          "value": "215-602-8033",
+          "type": "work"
+        },
+        {
+          "value": "215-602-8063",
+          "type": "work_fax"
+        },
+        {
+          "value": "267-237-0643",
+          "type": "mobile"
+        }
+      ]
+    },
+    {
+      "email": "bwalton@wearesparks.com",
+      "title": "Director, Client Technologies & Internal Systems",
+      "firstName": "Barry",
+      "lastName": "Walton",
+      "location": "Philadelphia",
+      "department": "IT",
+      "phones": [
+        {
+          "value": "215-602-8063",
+          "type": "work_fax"
+        },
+        {
+          "value": "215-671-1664",
+          "type": "work"
+        },
+        {
+          "value": "267-257-1307",
+          "type": "mobile"
+        }
+      ]
+    },
+    {
+      "email": "dchappell@wearesparks.com",
+      "title": "Manager, Help Desk",
+      "firstName": "Douglas",
+      "lastName": "Chappell",
+      "location": "Philadelphia",
+      "department": "IT",
+      "phones": [
+        {
+          "value": "215-676-5498",
+          "type": "work"
+        },
+        {
+          "value": "609-313-2981",
+          "type": "mobile"
+        },
+        {
+          "value": "DCHAPPELL-W10",
+          "type": "home"
+        }
+      ]
+    },
+    {
+      "email": "dgreco@wearesparks.com",
+      "title": "Help Desk Technician",
+      "firstName": "Dan",
+      "lastName": "Greco",
+      "location": "Philadelphia",
+      "department": "IT",
+      "phones": [
+        {
+          "value": "215-602-8063",
+          "type": "work_fax"
+        },
+        {
+          "value": "215-602-8879",
+          "type": "work"
+        },
+        {
+          "value": "267-251-2403",
+          "type": "mobile"
+        },
+        {
+          "value": "dgreco-lt",
+          "type": "home"
+        }
+      ]
+    },
+    {
+      "email": "lkhuu@wearesparks.com",
+      "title": "IT Operations Coordinator",
+      "firstName": "Lisa",
+      "lastName": "Khuu",
+      "location": "Philadelphia",
+      "department": "IT",
+      "phones": [
+        {
+          "value": "215-602-8067",
+          "type": "work"
+        },
+        {
+          "value": "267-241-4145",
+          "type": "mobile"
+        }
+      ]
+    },
+    {
+      "email": "pmarsteller@wearesparks.com",
+      "title": "Director, Information Technology",
+      "firstName": "Pat",
+      "lastName": "Marsteller",
+      "location": "Philadelphia",
+      "department": "IT",
+      "phones": [
+        {
+          "value": "215-602-8063",
+          "type": "work_fax"
+        },
+        {
+          "value": "215-671-1663",
+          "type": "work"
+        },
+        {
+          "value": "267-257-4530",
+          "type": "mobile"
+        },
+        {
+          "value": "pmarsteller-w7",
+          "type": "home"
+        }
+      ]
+    },
+    {
+      "email": "rosteradmin@wearesparks.com",
+      "title": "HR Manager",
+      "firstName": "Roster",
+      "lastName": "Admin",
+      "location": "Los Angeles",
+      "department": "Human Resources",
+      "phones": [
+        {
+          "value": "215-671-1663",
+          "type": "work"
+        },
+        {
+          "value": "215-215-1307",
+          "type": "mobile"
+        }
+      ]
+    }
+  ]

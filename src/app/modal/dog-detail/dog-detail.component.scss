@@ -1,0 +1,58 @@
+
+.people-detail{
+    padding: 7rem 4.6rem 0;
+    .name-input-with-icon-btn{
+        display: flex; justify-content: space-between; align-items: center;
+        .sc-ion-input-md-h {
+            --padding-top: 0px;
+            --padding-bottom: 0px;
+            &.input-not-editable{
+                --placeholder-opacity: 1;
+            }
+            &.input-editable{
+                --placeholder-opacity: 0.5;
+                opacity: 0.5;
+            }
+            
+        }
+        .popup-icon-btn-sec{
+            display: inline-flex; max-width:8rem; margin-right:-37px;
+            a{
+                margin:0px 7px;
+                img{
+                    float:left;
+                    max-width:25px;
+                }
+            }
+        }   
+    }
+    .input-not-editable{
+        --placeholder-opacity: 1;
+    }
+    .input-editable{
+        --placeholder-opacity: 0.5;
+        opacity: 0.5;
+        padding: 10px 5px;
+        border: none;
+        width:100px;
+    }
+    input:focus{
+        border: none;
+        outline: none;
+    }
+    label.department.dob-age-as-of-now{
+        line-height: 1.8rem;
+    
+        ion-datetime{
+            padding: 0.5rem;
+        }
+    }
+    .add-dog-btn-sec{
+        display:flex;
+        justify-content: flex-end;
+        margin-right:-30px;
+    }
+}
+.error-text {
+    color:red;
+}

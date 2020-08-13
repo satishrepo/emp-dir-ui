@@ -1,0 +1,7 @@
+{
+  "name": "sparks-roster",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
