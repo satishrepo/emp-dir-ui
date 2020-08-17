@@ -243,7 +243,7 @@ export class HomePage implements OnInit {
     // -- ionViewDidEnteris not working so called in here
     // this.ionViewDidEnter();
 
-    this.checkRemovedUser();
+    // this.checkRemovedUser();
     setTimeout( () => {
       this.getLoggedUser();
       this.init();
@@ -335,7 +335,7 @@ export class HomePage implements OnInit {
    */
   getLoggedUser() {
     const user = localStorage.getItem('sparks-logged-user');
-    this.loggedUser = JSON.parse(user);
+    this.loggedUser = {email: 'satish.purohit.3@gmail', name: 'satish'}//JSON.parse(user);
   }
 
   /**
@@ -354,7 +354,7 @@ export class HomePage implements OnInit {
         .subscribe( response => {
           this.loadingService.dismiss();
           if (response.responseCode === Enum.successCode && response.response.results.length) {
-                     
+            
             let dogCount = 0;
 
             // if group by department then push Dogs of Sparks department at last position
@@ -386,7 +386,7 @@ export class HomePage implements OnInit {
             } else {
               this.contactList = response.response.results;
             }
-
+            
             this.loadingData = false;
             // Array.prototype.push.apply(this.contactList, response.response.results);
             if(this.filters.filterDetail.departments.indexOf(Enum.dog_category) < 0) {

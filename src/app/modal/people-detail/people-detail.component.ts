@@ -73,23 +73,16 @@ export class PeopleDetailComponent implements OnInit {
   }
 
   ngOnInit() {
+    
     if (this.platform.is('cordova')) {
       this.isWeb = false;
     }
     this.loggedUser = JSON.parse(localStorage.getItem('sparks-logged-user'));
-    // this.getImage();
-    // tslint:disable-next-line:max-line-length
-    this.value['phones'] = this.value.phones && this.value.phones.length ? this.value.phones : [{type: 'mobile', value: this.value.mobilePhone}, {type: 'work', value: this.value.workPhone}];
-    this.mobilePhone = this.value.phones.filter( ph => ph.type === 'mobile').map( i => i.value);
-    this.workPhone = this.value.phones.filter( ph => ph.type === 'work').map( i => i.value);
-    console.log('mobilePhone - ', this.mobilePhone, ' work - ',  this.workPhone)
-    if (this.mobilePhone.length) {
-      this.actionPhone = this.mobilePhone[0];
-    } else if (this.workPhone.length) {
-      this.actionPhone = this.workPhone[0];
-    } 
-    this.mobilePhone = this.mobilePhone.length ? this.mobilePhone[0] : '--';
-    this.workPhone = this.workPhone.length ? this.workPhone[0] : '--';
+    this.loggedUser = this.loggedUser ? this.loggedUser : { role: 'ADMIN', email: 'satish.purohit.3@gmail.com', name: 'satish purohit'};
+    
+    this.mobilePhone = this.value.phones.mobile || '--';
+    this.workPhone = this.value.phones.work || '--';
+    
   }
 
  
@@ -130,7 +123,36 @@ export class PeopleDetailComponent implements OnInit {
     const fileList: FileList = event.target.files;
     let isDog = false;
     if (fileList.length > 0) {
-      const file: File = fileList[0];
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(event.target.files[0]);
+      fileReader.onloadend = e => {
+        const base64Image = fileReader.result;
+        const mime = base64Image.toString().split(";")[0];
+        const params = {
+          imageData : {
+            mime: mime.replace('data:', ''),
+            image: base64Image.toString().split(";")[1]
+          }
+        };
+        this.homeService.uploadImage(this.value.id, params)
+        .subscribe( rs => {
+            this.loadingService.dismiss();
+            this.myFile.nativeElement.value = null;
+            if (rs.responseCode !== Enum.successCode) {
+              this.presentAlert('Error', rs.responseDescription, 'app-alert');
+            } else {
+              this.value.actualImage = rs.response.results.imageUrl;
+              // this.value.actualImage = this.value.actualImage + '?v=' + Math.random().toFixed(4);
+              this.value.thumbnailImage = this.value.actualImage.replace('images/', 'resized/300X300/');
+              this.presentAlert('Success', rs.responseDescription, 'app-alert');
+            }
+          }, error => {
+            console.log(error);
+          });
+      };
+      // console.log('fileReader', fileReader);
+      
+      /* const file: File = fileList[0];
       const formData: FormData = new FormData();
       formData.append('file', file, file.name);
       formData.append('email', this.value.email);
@@ -149,7 +171,7 @@ export class PeopleDetailComponent implements OnInit {
           }
         }, error => {
           console.log(error);
-        });
+        }); */
     }
   }
 

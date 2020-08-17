@@ -22,6 +22,7 @@ export class HeaderInterceptor implements HttpInterceptor {
   const clonedRequest = req.clone({ headers: new HttpHeaders({
     // 'Content-Type':  'application/json',
     // 'x-api-key': 'xKsMYR75eJ639coUnrrng9Ie4Akrvs5I6sHEdmVb',
+    'x-api-key': 'd41d8cd98f00b204e9800998ecf8427e',
     'X-Auth-Token': authCode,
     'Request-Platform' : plateform.is('cordova') ? 'APP' : 'WEB',
     })

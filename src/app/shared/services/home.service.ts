@@ -18,6 +18,7 @@ export class HomeService {
   setHeader(header) {
     const token = localStorage.getItem('sparksapi-access-token');
     const headers = new HttpHeaders({
+      'x-api-key': 'd41d8cd98f00b204e9800998ecf8427e',
       'X-Auth-Token': token,
       'Request-Platform': 'WEB',
       header
@@ -49,6 +50,10 @@ export class HomeService {
     headers.append('Content-Type', 'multipart/form-data');
     headers.append('Accept', 'application/json');
     return this.http.post(`${this.baseUrl}${AppUrl.upload}`, formData, {headers: headers});
+  }
+
+  uploadImage(uid, params): Observable<any> {
+    return this.http.patch(`${this.baseUrl}${AppUrl.uploadImage}/${uid}`, params);
   }
 
   sendMessage(object: any) {
